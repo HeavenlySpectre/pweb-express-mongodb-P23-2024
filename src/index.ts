@@ -1,9 +1,9 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
+import bookRouter from './routes/book.route';
 import healthRouter from './routes/health.route';
 import authRouter from './routes/auth.route';
-import bookRouter from './routes/book.route';
 
 // Load environment variables
 dotenv.config();
@@ -15,18 +15,13 @@ const MONGODB_URI: string = process.env.MONGODB_URI || '';
 // Middleware
 app.use(express.json());
 
-// Root endpoint
-app.get('/', (_: Request, res: Response) => {
-  res.json({
+// Basic root endpoint
+app.get("/", (_: Request, res: Response) => {
+  res.status(200).json({
     status: 'success',
-    message: 'Welcome to PWEB API 💫',
+    message: 'Server is up and running 💫',
     data: {
-      serverTime: new Date().toISOString(),
-      endpoints: {
-        auth: '/auth',
-        books: '/book',
-        health: '/health'
-      }
+      serverTime: new Date().toISOString()
     }
   });
 });
@@ -58,11 +53,15 @@ app.use((req: Request, res: Response) => {
 // Connect to MongoDB and start server
 const startServer = async () => {
   try {
+    if (!MONGODB_URI) {
+      throw new Error('MONGODB_URI is not defined in environment variables');
+    }
+
     await mongoose.connect(MONGODB_URI);
     console.log('📦 Connected to MongoDB');
     
     app.listen(PORT, () => {
-      console.log(`⚡️[server]: Server is running on http://localhost:${PORT}`);
+      console.log(`⚡️[server]: Server is running on Port ${PORT}`);
     });
   } catch (error) {
     console.error('❌ Server failed to start:', error);
