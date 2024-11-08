@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv';
 import bookRouter from './routes/book.route';
 import healthRouter from './routes/health.route';
 import authRouter from './routes/auth.route';
+import mechanismRouter from './routes/mechanism.route';
 
 // Load environment variables
 dotenv.config();
@@ -30,6 +31,7 @@ app.get("/", (_: Request, res: Response) => {
 app.use('/health', healthRouter);
 app.use('/auth', authRouter);
 app.use('/book', bookRouter);
+app.use('/mechanism', mechanismRouter);
 
 // Error handler
 app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
