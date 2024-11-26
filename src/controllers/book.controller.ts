@@ -1,6 +1,30 @@
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import Book from '../models/book.model';
+import multer from 'multer';
+import path from 'path';
+
+// Multer config
+const storage = multer.diskStorage({
+  destination: 'uploads/',
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, 'book-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+export const upload = multer({ 
+  storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+      return cb(new Error('Only image files are allowed!'));
+    }
+    cb(null, true);
+  }
+});
 
 // Get all books with pagination and filtering
 export const getAllBooks = async (req: Request, res: Response): Promise<void> => {
