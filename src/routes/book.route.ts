@@ -3,39 +3,45 @@ import {
   getAllBooks, 
   getBookById, 
   addBook, 
-  modifyBook, 
-  removeBook 
+  updateBook,
+  deleteBook,
+  searchBooks,
+  getBooksByCategory
 } from '../controllers/book.controller';
 import { authenticateToken } from '../middleware/auth.middleware';
 
 const router: Router = Router();
 
-// Apply authentication middleware
-router.use(authenticateToken);
-
-// Get all books
+// Public routes (no authentication needed)
 router.get('/', async (req: Request, res: Response) => {
   await getAllBooks(req, res);
 });
 
-// Get book by ID
+router.get('/search', async (req: Request, res: Response) => {
+  await searchBooks(req, res);
+});
+
+router.get('/category/:category', async (req: Request, res: Response) => {
+  await getBooksByCategory(req, res);
+});
+
 router.get('/:id', async (req: Request, res: Response) => {
   await getBookById(req, res);
 });
 
-// Add new book
+// Protected routes (need authentication)
+router.use(authenticateToken);
+
 router.post('/', async (req: Request, res: Response) => {
   await addBook(req, res);
 });
 
-// Modify book
-router.patch('/:id', async (req: Request, res: Response) => {
-  await modifyBook(req, res);
+router.put('/:id', async (req: Request, res: Response) => {
+  await updateBook(req, res);
 });
 
-// Delete book
 router.delete('/:id', async (req: Request, res: Response) => {
-  await removeBook(req, res);
+  await deleteBook(req, res);
 });
 
 export default router;

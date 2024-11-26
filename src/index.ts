@@ -5,6 +5,7 @@ import bookRouter from './routes/book.route';
 import healthRouter from './routes/health.route';
 import authRouter from './routes/auth.route';
 import mechanismRouter from './routes/mechanism.route';
+const cors = require('cors');
 
 // Load environment variables
 dotenv.config();
@@ -15,6 +16,7 @@ const MONGODB_URI: string = process.env.MONGODB_URI || '';
 
 // Middleware
 app.use(express.json());
+app.use(cors());
 
 // Basic root endpoint
 app.get("/", (_: Request, res: Response) => {

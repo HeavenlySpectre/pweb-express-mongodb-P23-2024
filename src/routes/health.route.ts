@@ -5,15 +5,8 @@ const healthRouter: Router = express.Router();
 healthRouter.get('/', (req: Request, res: Response) => {
   res.json({
     status: 'success',
-    message: 'Health check successful',
-    data: {
-      uptime: process.uptime(),
-      timestamp: new Date().toISOString(),
-      serverInfo: {
-        nodejs: process.version,
-        platform: process.platform
-      }
-    }
+    message: 'May the success be with you!',
+    date: new Date().toDateString()
   });
 });
 
