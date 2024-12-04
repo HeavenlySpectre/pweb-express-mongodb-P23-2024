@@ -1,6 +1,7 @@
 import express, { Application, Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
 import * as dotenv from 'dotenv';
+import path from 'path'; // Tambahkan ini
 import bookRouter from './routes/book.route';
 import healthRouter from './routes/health.route';
 import authRouter from './routes/auth.route';
@@ -16,7 +17,13 @@ const MONGODB_URI: string = process.env.MONGODB_URI || '';
 
 // Middleware
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173', // frontend URL
+  credentials: true
+}));
+
+// Serve static files from uploads directory
+app.use('/uploads', express.static(path.join(__dirname, '../uploads'))); // Tambahkan ini
 
 // Basic root endpoint
 app.get("/", (_: Request, res: Response) => {
@@ -59,6 +66,12 @@ const startServer = async () => {
   try {
     if (!MONGODB_URI) {
       throw new Error('MONGODB_URI is not defined in environment variables');
+    }
+
+    // Create uploads directory if it doesn't exist
+    const uploadsDir = path.join(__dirname, '../uploads');
+    if (!require('fs').existsSync(uploadsDir)) {
+      require('fs').mkdirSync(uploadsDir, { recursive: true });
     }
 
     await mongoose.connect(MONGODB_URI);
